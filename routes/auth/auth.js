@@ -8,9 +8,9 @@ const router = express.Router()
 
 router.route('/signup').post(catchErrorHandler(signup));
 router.route('/login').post(catchErrorHandler(login));
-router.route('/logout').post(catchErrorHandler(isValidToken,verifyToken,logout));
+router.route('/logout').post(isValidToken,verifyToken,catchErrorHandler(logout));
 router.route('/forget-password').post(catchErrorHandler(forgetPassword));
 router.route('/reset-password').post(catchErrorHandler(resetPassword));
-router.route('/profile').get(catchErrorHandler(isValidToken,verifyToken,profile));
+router.route('/profile').get(isValidToken,verifyToken,profile);
 
 export default router

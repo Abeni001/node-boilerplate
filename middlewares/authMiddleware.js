@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken'
 import customError from '../utils/customError.js';
-export const verifyToken =async(req,res,next)=>{
+import { catchErrorHandler } from './errorHandler.js';
+
+export const verifyToken =catchErrorHandler(async(req,res,next)=>{
     const token = req.headers['authorization'].split(" ")[1]
 
     if(!token){
@@ -10,6 +12,6 @@ export const verifyToken =async(req,res,next)=>{
     const verified = jwt.verify(token,process.env.JWT_SECRET)
     req.userId = verified;
     next()
-};
+})
 
 // export default verifyToken
