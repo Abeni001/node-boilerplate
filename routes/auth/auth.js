@@ -1,9 +1,16 @@
 import express from "express";
-import { login, signup } from "../../controllers/authController.js";
+import { login, signup,profile,forgetPassword,resetPassword, logout } from "../../controllers/authController.js";
+import { verifyToken } from "../../middlewares/authMiddleware.js";
+import { isValidToken } from "../../middlewares/validToken.js";
+import { catchErrorHandler } from "../../middlewares/errorHandler.js";
 
 const router = express.Router()
 
-router.route('/singup').get(signup);
-// router.route('/singup').post(login);
+router.route('/signup').post(catchErrorHandler(signup));
+router.route('/login').post(catchErrorHandler(login));
+router.route('/logout').post(catchErrorHandler(isValidToken,verifyToken,logout));
+router.route('/forget-password').post(catchErrorHandler(forgetPassword));
+router.route('/reset-password').post(catchErrorHandler(resetPassword));
+router.route('/profile').get(catchErrorHandler(isValidToken,verifyToken,profile));
 
 export default router
