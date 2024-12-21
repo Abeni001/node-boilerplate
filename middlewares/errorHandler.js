@@ -6,7 +6,7 @@ export const errorHandler =(error,req,res,next)=>{
         message:error.message
     })
 }
-export const catchErrorHandler = (func)=>{
+export const catchErrorHandler = (func)=>{   // it expects async function only
     return (req,res,next)=>{
         func(req,res,next).catch(err=>next(err))
     }
