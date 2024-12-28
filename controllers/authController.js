@@ -39,7 +39,7 @@ export const signup = async(req,res,next)=>{
 export const login = async(req,res,next)=>{
     const { email,password } = req.body
     // fetch and check user crendetials.
-    const user = await User.findOne({email})
+    const user = await User.findOne({email}).select('+password')
     if(!user){
         const err = new customError('Invalid credentials',404) 
         return next(err)
@@ -100,11 +100,10 @@ export const resetPassword = async(req,res,next)=>{
             const err = new customError('Invalid token',400)
            return next(err)
         }
-        let now = new Date();
         const createdAt = new Date(existToken.createdAt)
 
         const expireTime = new Date(createdAt.getTime() + ( 5 * 60 * 1000 ))
-        if(expireTime > now){
+        if(expireTime < createdAt){
             const err = new customError('expired token',400)
             return next(err)
         }
@@ -114,8 +113,9 @@ export const resetPassword = async(req,res,next)=>{
 
         user.password = hashedPassword;
         user.confirm_password = hashedPassword;
+        user.password_changed_at = new Date();
         user.save()
-        await PasswordReset.deleteOne();
+        await PasswordReset.deleteMany({email:existToken.email});   // delete any expired or any forgoten token
         
         return res.json({
             status:'success',
